@@ -7,7 +7,7 @@ import (
 
 var globalValue *int
 
-const constantValue = 10
+const test2 = 10
 
 func createPointer() {
 	k := 5

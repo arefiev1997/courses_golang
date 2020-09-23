@@ -1,6 +1,12 @@
 package tasks
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"os"
+)
 
 // Subslice changing subslice
 func Subslice() {
@@ -73,3 +79,65 @@ outer:
 		fmt.Println()
 	}
 }
+
+func OpenFile() {
+	f, err := os.Open("file")
+	defer f.Close()
+	if err != nil {
+		return
+	}
+
+	b, err := ioutil.ReadAll(f)
+	println(string(b))
+}
+
+func F1() {
+	defer println("f1-begin")
+	f2()
+	defer println("f1-end")
+}
+
+func f2() {
+	defer println("f2-begin")
+	f3()
+	defer println("f2-end")
+}
+
+func f3() {
+	defer println("f3-begin")
+	panic(0)
+	defer println("f3-end")
+}
+
+func Recov() {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("recover:%#v", r)
+		}
+	}()
+	panic(1)
+	panic(2)
+}
+
+type Result struct {
+	Status int
+}
+
+func JsonUnmarshall() {
+	var data = []byte(`{"status": 200}`)
+	result := &Result{}
+
+	if err := json.Unmarshal(data, result); err != nil {
+		fmt.Println("error:", err)
+		return
+	}
+
+	fmt.Printf("result=%+v", result)
+}
+
+// func RunGoroutines() {
+// 	wg := &sync.WaitGroup{}
+// 	go func() {
+// 		fmt.Println("text")
+// 	}
+// }
